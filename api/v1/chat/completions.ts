@@ -7,13 +7,22 @@ function openaiError(status: number, message: string, type = 'invalid_request_er
   return { status, body: { error: { message, type } } };
 }
 
-async function parseBody(req: any): Promise<unknown> {
-  if (req.body !== undefined) return req.body;
+async function parseBody(req: any): Promise<Record<string, unknown>> {
+  // Vercel may pre-parse into req.body
+  const b = req.body;
+  if (b !== null && b !== undefined) {
+    if (typeof b === 'object' && !Buffer.isBuffer(b)) return b as Record<string, unknown>;
+    const s = Buffer.isBuffer(b) ? b.toString('utf8') : String(b);
+    try { return JSON.parse(s); } catch { /* fall through */ }
+  }
+
+  // Read raw stream
   return new Promise((resolve) => {
-    let raw = '';
-    req.on('data', (chunk: Buffer) => { raw += chunk.toString('utf8'); });
+    const chunks: Buffer[] = [];
+    req.on('data', (c: Buffer) => chunks.push(c));
     req.on('end', () => {
-      try { resolve(JSON.parse(raw)); } catch { resolve({}); }
+      try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); }
+      catch { resolve({}); }
     });
     req.on('error', () => resolve({}));
   });
@@ -32,8 +41,7 @@ export default async function handler(req: any, res: any) {
     });
   }
 
-  const raw = await parseBody(req);
-  const body = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
+  const body = await parseBody(req);
   const openaiModel = typeof body.model === 'string' ? body.model : 'gpt-4o';
   const geminiModel = resolveGeminiModel(openaiModel);
   const stream = Boolean(body.stream);
