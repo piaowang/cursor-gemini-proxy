@@ -34,6 +34,15 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ error: { message: 'Method not allowed', type: 'invalid_request_error' } });
   }
 
+  const proxyKey = process.env.PROXY_API_KEY;
+  if (proxyKey) {
+    const auth = req.headers?.['authorization'] ?? '';
+    const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+    if (token !== proxyKey) {
+      return res.status(401).json({ error: { message: 'Invalid API key', type: 'invalid_request_error' } });
+    }
+  }
+
   const apiKey = process.env.GOOGLE_API_KEY;
   if (!apiKey) {
     return res.status(500).json({
