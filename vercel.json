@@ -4,5 +4,12 @@
     { "src": "api/v1/models.ts", "use": "@vercel/node" },
     { "src": "api/v1/chat/completions.ts", "use": "@vercel/node" },
     { "src": "public/index.html", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/v1/models", "dest": "/api/v1/models.ts" },
+    { "src": "/api/v1/chat/completions", "dest": "/api/v1/chat/completions.ts" },
+    { "src": "/v1/models", "dest": "/api/v1/models.ts" },
+    { "src": "/v1/chat/completions", "dest": "/api/v1/chat/completions.ts" },
+    { "src": "/", "dest": "/public/index.html" }
   ]
 }
