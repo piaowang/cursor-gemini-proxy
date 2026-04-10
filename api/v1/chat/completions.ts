@@ -48,7 +48,8 @@ export default async function handler(req: any, res: any) {
   const messages = (Array.isArray(body.messages) ? body.messages : []) as ChatMsg[];
 
   if (messages.length === 0) {
-    const e = openaiError(400, 'messages is required and must be a non-empty array');
+    const debug = `body_type=${typeof body} keys=${Object.keys(body).join(',')} raw=${JSON.stringify(body).slice(0, 300)}`;
+    const e = openaiError(400, `messages is required and must be a non-empty array | DEBUG: ${debug}`);
     return res.status(e.status).json(e.body);
   }
 
