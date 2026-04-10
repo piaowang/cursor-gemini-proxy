@@ -2,7 +2,11 @@
   "buildCommand": "",
   "outputDirectory": "public",
   "functions": {
-    "api/**/*.ts": {
+    "api/v1/chat/completions.ts": {
+      "memory": 1024,
+      "maxDuration": 30
+    },
+    "api/v1/models.ts": {
       "memory": 1024,
       "maxDuration": 30
     }
