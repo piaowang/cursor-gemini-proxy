@@ -7,7 +7,19 @@ function openaiError(status: number, message: string, type = 'invalid_request_er
   return { status, body: { error: { message, type } } };
 }
 
-export default async function handler(req: { method?: string; body?: unknown }, res: any) {
+async function parseBody(req: any): Promise<unknown> {
+  if (req.body !== undefined) return req.body;
+  return new Promise((resolve) => {
+    let raw = '';
+    req.on('data', (chunk: Buffer) => { raw += chunk.toString('utf8'); });
+    req.on('end', () => {
+      try { resolve(JSON.parse(raw)); } catch { resolve({}); }
+    });
+    req.on('error', () => resolve({}));
+  });
+}
+
+export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     res.setHeader?.('Allow', 'POST');
     return res.status(405).json({ error: { message: 'Method not allowed', type: 'invalid_request_error' } });
@@ -20,7 +32,7 @@ export default async function handler(req: { method?: string; body?: unknown }, 
     });
   }
 
-  const raw = req.body;
+  const raw = await parseBody(req);
   const body = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
   const openaiModel = typeof body.model === 'string' ? body.model : 'gpt-4o';
   const geminiModel = resolveGeminiModel(openaiModel);
