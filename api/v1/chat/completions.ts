@@ -45,11 +45,12 @@ export default async function handler(req: any, res: any) {
   const openaiModel = typeof body.model === 'string' ? body.model : 'gpt-4o';
   const geminiModel = resolveGeminiModel(openaiModel);
   const stream = Boolean(body.stream);
-  const messages = (Array.isArray(body.messages) ? body.messages : []) as ChatMsg[];
+  // Cursor with gpt-4.1 uses Responses API format: field is "input" instead of "messages"
+  const rawMessages = Array.isArray(body.messages) ? body.messages : Array.isArray(body.input) ? body.input : [];
+  const messages = rawMessages as ChatMsg[];
 
   if (messages.length === 0) {
-    const debug = `body_type=${typeof body} keys=${Object.keys(body).join(',')} raw=${JSON.stringify(body).slice(0, 300)}`;
-    const e = openaiError(400, `messages is required and must be a non-empty array | DEBUG: ${debug}`);
+    const e = openaiError(400, 'messages is required and must be a non-empty array');
     return res.status(e.status).json(e.body);
   }
 
