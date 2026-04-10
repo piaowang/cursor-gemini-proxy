@@ -1,11 +1,15 @@
 {
   "version": 2,
-  "functions": {
-    "api/v1/chat/completions.ts": {
-      "maxDuration": 60
+  "builds": [
+    {
+      "src": "api/v1/chat/completions.ts",
+      "use": "@vercel/node",
+      "config": { "maxDuration": 60 }
     },
-    "api/v1/models.ts": {
-      "maxDuration": 60
+    {
+      "src": "api/v1/models.ts",
+      "use": "@vercel/node",
+      "config": { "maxDuration": 60 }
     }
-  }
+  ]
 }
