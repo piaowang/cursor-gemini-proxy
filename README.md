@@ -120,20 +120,30 @@ data: [DONE]
 cursor-gemini-proxy/
 ├─ package.json
 ├─ vercel.json
+├─ lib/
+│  ├─ geminiClient.ts
+│  ├─ modelMap.ts
+│  ├─ openaiMessages.ts
+│  └─ streamOpenAI.ts
 └─ api/
    └─ v1/
       ├─ chat/
       │  └─ completions.ts
-      ├─ lib/
-      │  ├─ geminiClient.ts
-      │  ├─ modelMap.ts
-      │  ├─ openaiMessages.ts
-      │  └─ streamOpenAI.ts
       └─ models.ts
 ```
+
+说明：`lib/` 必须放在 `api/` 外面。Vercel 会把 `api/` 下每个 `.ts` 都当成独立 Serverless 路由；共享代码放在 `api/` 里会误部署并可能导致构建报错。
 
 ## 注意事项
 
 - 请确认你的 `GOOGLE_API_KEY` 对应的账号有可用的 Gemini 模型权限
 - 某些 Gemini 模型可能会随时间调整名称或可用性
-- 如果某个映射模型不可用，可以直接修改 `api/v1/lib/modelMap.ts`
+- 如果某个映射模型不可用，可以直接修改 `lib/modelMap.ts`
+
+## Vercel CLI 报错：Function Runtimes must have a valid version
+
+常见原因与处理：
+
+1. **`vercel.json` 里不要写** `"runtime": "nodejs20.x"` 这类字段；Node 版本用 `package.json` 的 `engines.node` 指定。
+2. 仓库里不要同时留 **`now.json`**，只保留 `vercel.json`（且建议带 `"version": 2`）。
+3. 修改配置后重新 **push 到 GitHub** 再部署；本地 CLI 请确认在**项目根目录**执行，且拉取的是最新提交。

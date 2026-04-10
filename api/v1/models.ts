@@ -1,4 +1,4 @@
-import { listOpenAIModelIds } from './lib/modelMap.js';
+import { listOpenAIModelIds } from '../../lib/modelMap.js';
 
 export default function handler(req: { method?: string }, res: any) {
   if (req.method !== 'GET') {

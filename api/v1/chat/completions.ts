@@ -1,7 +1,7 @@
-import { geminiUrl, readGeminiError, extractText } from '../lib/geminiClient.js';
-import { buildGeminiPayload, type ChatMsg } from '../lib/openaiMessages.js';
-import { resolveGeminiModel } from '../lib/modelMap.js';
-import { pipeGeminiSseToOpenAI } from '../lib/streamOpenAI.js';
+import { geminiUrl, readGeminiError, extractText } from '../../../lib/geminiClient.js';
+import { buildGeminiPayload, type ChatMsg } from '../../../lib/openaiMessages.js';
+import { resolveGeminiModel } from '../../../lib/modelMap.js';
+import { pipeGeminiSseToOpenAI } from '../../../lib/streamOpenAI.js';
 
 function openaiError(status: number, message: string, type = 'invalid_request_error') {
   return { status, body: { error: { message, type } } };

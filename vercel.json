@@ -1,6 +1,10 @@
 {
+  "version": 2,
   "functions": {
-    "api/**/*.ts": {
+    "api/v1/chat/completions.ts": {
+      "maxDuration": 60
+    },
+    "api/v1/models.ts": {
       "maxDuration": 60
     }
   }
