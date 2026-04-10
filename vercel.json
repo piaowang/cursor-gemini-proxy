@@ -3,11 +3,6 @@
   "builds": [
     { "src": "api/v1/models.ts", "use": "@vercel/node" },
     { "src": "api/v1/chat/completions.ts", "use": "@vercel/node" },
-    { "src": "public/**", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "/api/v1/(.*)", "dest": "/api/v1/$1" },
-    { "src": "/v1/(.*)", "dest": "/api/v1/$1" },
-    { "src": "/(.*)", "dest": "/public/$1" }
+    { "src": "public/index.html", "use": "@vercel/static" }
   ]
 }
