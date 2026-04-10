@@ -12,6 +12,7 @@
     { "src": "/v1/models", "dest": "/api/v1/models.ts" },
     { "src": "/v1/chat/completions", "dest": "/api/v1/chat/completions.ts" },
     { "src": "/anthropic/v1/messages", "dest": "/api/anthropic/v1/messages.ts" },
+    { "src": "/v1/messages", "dest": "/api/anthropic/v1/messages.ts" },
     { "src": "/", "dest": "/public/index.html" }
   ]
 }
